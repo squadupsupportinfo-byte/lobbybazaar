@@ -1,6 +1,0 @@
-{
-  "name": "SquadUp",
-  "description": "Connect gamers and assemble squads on a glowing sketch outline radar map.",
-  "requestFramePermissions": [],
-  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
-}
