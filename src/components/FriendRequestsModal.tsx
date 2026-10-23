@@ -298,7 +298,7 @@ export function FriendRequestsModal({
                               </span>
                             </div>
                             <div className="text-[11px] font-mono text-slate-400">
-                              Connected on SquadUp
+                              Connected on LobbyBazaar
                             </div>
                           </div>
                         </div>

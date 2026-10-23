@@ -3829,7 +3829,7 @@ export function GamerMap({
 
         {/* Clean quiet footer */}
         <footer className="mt-8 mb-6 text-center text-xs text-slate-500 font-sketch flex flex-col sm:flex-row items-center justify-center gap-2 select-none">
-          <span>SquadUp © 2026 · All rights reserved</span>
+          <span>LobbyBazaar © 2026 · All rights reserved</span>
           <span className="hidden sm:inline">·</span>
           <button
             type="button"
@@ -3853,7 +3853,7 @@ export function GamerMap({
                 className="text-cyan-400 hover:text-cyan-300 underline cursor-pointer flex items-center gap-1"
               >
                 <Mail className="w-3.5 h-3.5" />
-                <span>Questions & Reports (squadupgaming6@gmail.com)</span>
+                <span>Questions & Reports (lobbybazaar6@gmail.com)</span>
               </button>
             </>
           )}

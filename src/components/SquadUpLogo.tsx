@@ -212,8 +212,8 @@ export function SquadUpLogo({
               filter: 'url(#sketch-glow)',
             }}
           >
-            <span className="text-green-400">Squad</span>
-            <span className="text-lime-400">Up</span>
+            <span className="text-green-400">Lobby</span>
+            <span className="text-lime-400">Bazaar</span>
           </span>
           <svg
             className="w-20 sm:w-24 h-2 mt-0.5 text-green-400 pointer-events-none"

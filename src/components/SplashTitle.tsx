@@ -72,7 +72,7 @@ export function SplashTitle({ onComplete }: SplashTitleProps) {
           <TacticalLogo size="hero" showHUD={true} animated={true} />
         </div>
 
-        {/* Title: SquadUp */}
+        {/* Title: LobbyBazaar */}
         <h1
           className="text-5xl xs:text-6xl sm:text-7xl md:text-8xl font-black font-display tracking-tight text-white select-none"
           style={{
@@ -81,8 +81,8 @@ export function SplashTitle({ onComplete }: SplashTitleProps) {
             filter: 'url(#sketch-glow)',
           }}
         >
-          <span className="text-green-400">Squad</span>
-          <span className="text-lime-400">Up</span>
+          <span className="text-green-400">Lobby</span>
+          <span className="text-lime-400">Bazaar</span>
         </h1>
 
         {/* Sketched Underline Accent */}
@@ -154,7 +154,7 @@ export function SplashTitle({ onComplete }: SplashTitleProps) {
         RADAR_FREQ: 2.4GHz // TACTICAL_GRID
       </div>
       <div className="absolute bottom-4 right-6 text-xs font-mono-num text-slate-500 hidden sm:block">
-        BUILD: SQUADUP_ALPHA // GLOW_OUTLINE
+        BUILD: LOBBYBAZAAR_ALPHA // GLOW_OUTLINE
       </div>
     </div>
   );

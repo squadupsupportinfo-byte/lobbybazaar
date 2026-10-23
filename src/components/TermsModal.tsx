@@ -114,7 +114,7 @@ export function TermsModal({
                 Summary in Plain Language (18+ Requirement):
               </p>
               <p>
-                SquadUp is strictly for users <strong>18 years of age and older</strong>. We exist solely to connect adult gamers and facilitate discovery. We do not broker deals, process payments, or guarantee trades. You trade and meet at your own discretion and risk. We take $0 from transactions, charge zero fees, and are not liable for user actions.
+                LobbyBazaar is strictly for users <strong>18 years of age and older</strong>. We exist solely to connect adult gamers and facilitate discovery. We do not broker deals, process payments, or guarantee trades. You trade and meet at your own discretion and risk. We take $0 from transactions, charge zero fees, and are not liable for user actions.
               </p>
             </div>
           </div>
@@ -126,8 +126,8 @@ export function TermsModal({
               <span>1. Peer-to-Peer Directory Only (We Just Connect People)</span>
             </div>
             <p className="text-xs text-slate-300 leading-relaxed font-sketch">
-              SquadUp is an interactive map and directory service designed to help local players find fireteams,
-              gaming friends, local shops, and tournaments. SquadUp is NOT an employer, agent, broker,
+              LobbyBazaar is an interactive map and directory service designed to help local players find fireteams,
+              gaming friends, local shops, and tournaments. LobbyBazaar is NOT an employer, agent, broker,
               auctioneer, or commercial merchant. We do not employ players, host events ourselves, or direct user
               activities.
             </p>
@@ -140,8 +140,8 @@ export function TermsModal({
               <span>2. Zero Fees & No Financial Involvement ($0 Taken)</span>
             </div>
             <p className="text-xs text-slate-300 leading-relaxed font-sketch">
-              SquadUp takes <strong>$0 in fees</strong> and <strong>0% commission</strong> from any item sales,
-              purchases, or trades arranged between users. SquadUp does NOT handle, process, receive, or escrow
+              LobbyBazaar takes <strong>$0 in fees</strong> and <strong>0% commission</strong> from any item sales,
+              purchases, or trades arranged between users. LobbyBazaar does NOT handle, process, receive, or escrow
               funds. Any monetary or trade transaction is conducted strictly between consenting individuals through
               their own chosen methods.
             </p>
@@ -155,7 +155,7 @@ export function TermsModal({
             </div>
             <p className="text-xs text-slate-300 leading-relaxed font-sketch">
               Any agreement to buy, sell, barter, or trade video games, consoles, hardware, collectibles, or
-              services is solely between the buyer and the seller. SquadUp makes no guarantees regarding the
+              services is solely between the buyer and the seller. LobbyBazaar makes no guarantees regarding the
               authenticity, working condition, legality, safety, or quality of listed items. We do not provide
               warranties, return policies, or dispute arbitration.
             </p>
@@ -195,10 +195,10 @@ export function TermsModal({
               <span>6. Limitation of Liability & Hold Harmless</span>
             </div>
             <p className="text-xs text-slate-300 leading-relaxed font-mono">
-              TO THE FULLEST EXTENT PERMITTED BY LAW, SQUADUP, ITS CREATORS, DEVELOPERS, OPERATORS, AND
+              TO THE FULLEST EXTENT PERMITTED BY LAW, LOBBYBAZAAR, ITS CREATORS, DEVELOPERS, OPERATORS, AND
               AFFILIATES SHALL NOT BE LIABLE FOR ANY CLAIMS, DAMAGES, FRAUD, THEFT, INJURIES, DISPUTES, OR LOSSES
               ARISING OUT OF OR IN CONNECTION WITH YOUR USE OF THE APP OR INTERACTIONS WITH OTHER USERS. YOU AGREE
-              TO INDEMNIFY AND HOLD HARMLESS SQUADUP AND ITS CREATORS FROM ANY THIRD-PARTY LIABILITIES.
+              TO INDEMNIFY AND HOLD HARMLESS LOBBYBAZAAR AND ITS CREATORS FROM ANY THIRD-PARTY LIABILITIES.
             </p>
           </div>
 
@@ -209,7 +209,7 @@ export function TermsModal({
               <span>7. Age Requirement (Strictly 18 Years and Older) & Community Rules</span>
             </div>
             <p className="text-xs text-slate-200 leading-relaxed font-sketch">
-              <strong className="text-amber-300">You must be at least 18 years old to access or use SquadUp.</strong> Browsing the radar map, discovering players, contacting members, creating squads, or deploying stores is strictly reserved for individuals aged 18 and older. By using this platform, you affirm, warrant, and certify that you are 18 years of age or older. Illegal items (pirated software, stolen goods, weapons, illegal substances) and abusive behavior (harassment, hate speech, threats) are strictly prohibited and subject to immediate account termination.
+              <strong className="text-amber-300">You must be at least 18 years old to access or use LobbyBazaar.</strong> Browsing the radar map, discovering players, contacting members, creating squads, or deploying stores is strictly reserved for individuals aged 18 and older. By using this platform, you affirm, warrant, and certify that you are 18 years of age or older. Illegal items (pirated software, stolen goods, weapons, illegal substances) and abusive behavior (harassment, hate speech, threats) are strictly prohibited and subject to immediate account termination.
             </p>
           </div>
 
@@ -220,7 +220,7 @@ export function TermsModal({
               <span>8. Support, Questions & Content Reporting</span>
             </div>
             <p className="text-xs text-slate-200 leading-relaxed font-sketch">
-              For any questions, safety concerns, or to report inappropriate user behavior, harassment, fraudulent listings, or offensive content, contact our team directly at <a href="mailto:squadupgaming6@gmail.com" className="text-cyan-300 underline font-mono font-bold">squadupgaming6@gmail.com</a>. Reports are reviewed promptly by our moderation team.
+              For any questions, safety concerns, or to report inappropriate user behavior, harassment, fraudulent listings, or offensive content, contact our team directly at <a href="mailto:lobbybazaar6@gmail.com" className="text-cyan-300 underline font-mono font-bold">lobbybazaar6@gmail.com</a>. Reports are reviewed promptly by our moderation team.
             </p>
           </div>
         </div>
@@ -233,7 +233,7 @@ export function TermsModal({
                 Terms of Service & 18+ Peer-to-Peer Agreement
               </span>
               <span className="text-[11px] text-slate-400 font-sketch">
-                SquadUp © 2026 · All rights reserved. Verified for adult users 18+.
+                LobbyBazaar © 2026 · All rights reserved. Verified for adult users 18+.
               </span>
             </div>
 

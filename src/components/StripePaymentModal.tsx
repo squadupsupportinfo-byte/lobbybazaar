@@ -100,7 +100,7 @@ export const StripePaymentModal: React.FC<StripePaymentModalProps> = ({
     setCardNumber('4242 4242 4242 4242');
     setCardExpiry('12/28');
     setCardCvc('123');
-    setCardName(businessName ? `${businessName} Sponsor` : 'SquadUp Merchant');
+    setCardName(businessName ? `${businessName} Sponsor` : 'LobbyBazaar Merchant');
     setCardZip('90210');
     setErrorMessage(null);
   };

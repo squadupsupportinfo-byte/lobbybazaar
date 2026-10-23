@@ -363,7 +363,7 @@ export function AuthModal({ isOpen, onClose, defaultMode = 'signup', onSignUpSuc
                 : 'Create Gamer Account'
                 : mode === 'forgot'
                 ? 'Password Recovery'
-                : 'Sign In to SquadUp'}
+                : 'Sign In to LobbyBazaar'}
             </h2>
           </div>
           <button

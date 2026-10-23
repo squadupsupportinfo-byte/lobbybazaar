@@ -751,7 +751,7 @@ export function SellTradeBuyModal({
           <div className="p-3 bg-amber-950/30 border border-amber-500/40 rounded-xl flex items-start gap-2.5 text-xs text-amber-200 font-sketch">
             <ShieldAlert className="w-4 h-4 text-amber-400 flex-shrink-0 mt-0.5" />
             <div>
-              <strong className="text-amber-300">0% Fees & Peer-to-Peer Trading Notice:</strong> SquadUp takes $0 in fees and does NOT process payments. All sales, trades, and exchanges are conducted solely between you and the buyer/seller at your own risk. Always meet in safe, well-lit public locations.
+              <strong className="text-amber-300">0% Fees & Peer-to-Peer Trading Notice:</strong> LobbyBazaar takes $0 in fees and does NOT process payments. All sales, trades, and exchanges are conducted solely between you and the buyer/seller at your own risk. Always meet in safe, well-lit public locations.
             </div>
           </div>
 

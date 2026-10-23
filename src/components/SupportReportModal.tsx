@@ -8,7 +8,7 @@ interface SupportReportModalProps {
   defaultCategory?: 'report' | 'question';
 }
 
-export const SUPPORT_EMAIL = 'squadupgaming6@gmail.com';
+export const SUPPORT_EMAIL = 'lobbybazaar6@gmail.com';
 
 export const SupportReportModal: React.FC<SupportReportModalProps> = ({
   isOpen,
@@ -28,12 +28,12 @@ export const SupportReportModal: React.FC<SupportReportModalProps> = ({
   };
 
   const mailSubject = encodeURIComponent(
-    selectedTopic === 'report' ? 'SquadUp - User Report / Moderation Issue' : 'SquadUp - Support Question / Inquiry'
+    selectedTopic === 'report' ? 'LobbyBazaar - User Report / Moderation Issue' : 'LobbyBazaar - Support Question / Inquiry'
   );
   const mailBody = encodeURIComponent(
     selectedTopic === 'report'
-      ? `Hello SquadUp Support Team,\n\nI would like to report an issue or user:\n\n• Your GamerTag (optional):\n• Reported User/Store/Billboard (if applicable):\n• Description of the issue or violation:\n• Date/Time:\n• Additional details or links:\n\nThank you!`
-      : `Hello SquadUp Support Team,\n\nI have a question regarding SquadUp:\n\n• Your GamerTag (optional):\n• Question / Feedback:\n\nThank you!`
+      ? `Hello LobbyBazaar Support Team,\n\nI would like to report an issue or user:\n\n• Your GamerTag (optional):\n• Reported User/Store/Billboard (if applicable):\n• Description of the issue or violation:\n• Date/Time:\n• Additional details or links:\n\nThank you!`
+      : `Hello LobbyBazaar Support Team,\n\nI have a question regarding LobbyBazaar:\n\n• Your GamerTag (optional):\n• Question / Feedback:\n\nThank you!`
   );
 
   const mailtoLink = `mailto:${SUPPORT_EMAIL}?subject=${mailSubject}&body=${mailBody}`;
@@ -59,7 +59,7 @@ export const SupportReportModal: React.FC<SupportReportModalProps> = ({
                 Help, Questions & Reports
               </h3>
               <p className="text-xs font-sketch text-cyan-200">
-                Direct communication with the SquadUp operations team
+                Direct communication with the LobbyBazaar operations team
               </p>
             </div>
           </div>
@@ -183,7 +183,7 @@ export const SupportReportModal: React.FC<SupportReportModalProps> = ({
 
         {/* Footer */}
         <div className="mt-5 pt-3 border-t border-cyan-500/20 flex items-center justify-between text-[11px] font-sketch text-slate-400">
-          <span>SquadUp Support Team</span>
+          <span>LobbyBazaar Support Team</span>
           <button
             type="button"
             onClick={() => {

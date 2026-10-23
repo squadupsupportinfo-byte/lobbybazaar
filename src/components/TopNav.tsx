@@ -51,7 +51,7 @@ export function TopNav({
             className="flex items-center gap-1.5 font-display font-black text-xs sm:text-sm tracking-wider text-green-300 hover:text-green-200 transition-colors cursor-pointer"
           >
             <span className="w-2 h-2 rounded-full bg-green-400 animate-pulse" />
-            <span>SQUADUP</span>
+            <span><span className="text-green-400">Lobby</span><span className="text-lime-400">Bazaar</span></span>
           </button>
 
           {/* Button to read Terms and Conditions */}

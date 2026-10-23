@@ -160,7 +160,7 @@ export function GamerSocialProfileModal({
     (targetUser as GamerProfile)?.bio ||
     (targetUser as SquadBeacon)?.bio ||
     (targetUser as any)?.description ||
-    'Tactical gamer on SquadUp radar.';
+    'Tactical gamer on LobbyBazaar radar.';
 
   const targetRank =
     (targetUser as GamerProfile)?.rank ||

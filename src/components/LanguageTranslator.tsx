@@ -304,7 +304,7 @@ export function LanguageTranslator() {
                 </div>
                 <div className="min-w-0">
                   <h3 className="text-sm font-bold font-display text-white tracking-wide truncate">
-                    Translate SquadUp
+                    Translate LobbyBazaar
                   </h3>
                   <p className="text-[10px] font-mono text-green-300/80 truncate">
                     100+ Worldwide Languages
