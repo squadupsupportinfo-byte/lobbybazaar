@@ -18,7 +18,7 @@ const stripeSecretKey =
 const webhookSecret =
   process.env.STRIPE_WEBHOOK_SECRET || process.env.webhook_end || '';
 const stripeProductId =
-  process.env.STRIPE_PRODUCT_ID || process.env.product_id || '';
+  process.env.STRIPE_PRODUCT_ID || process.env.product_id || 'prod_VSALOmpGkBpFRv';
 const stripeCharacterProductId =
   process.env.STRIPE_CHARACTER_PRODUCT_ID ||
   process.env.STRIPE_3_DOLLAR_PRODUCT_ID ||
@@ -34,6 +34,17 @@ const stripeCharacterProductId =
   '';
 
 const stripe = stripeSecretKey ? new Stripe(stripeSecretKey) : null;
+
+// Enable CORS for all API endpoints
+app.use('/api', (req, res, next) => {
+  res.header('Access-Control-Allow-Origin', '*');
+  res.header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+  res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+  if (req.method === 'OPTIONS') {
+    return res.sendStatus(204);
+  }
+  next();
+});
 
 // Stripe Webhook Endpoint (Must receive raw buffer for signature verification)
 app.post(
@@ -222,15 +233,6 @@ app.post('/api/create-checkout-session', async (req, res) => {
           },
           quantity: 1,
         };
-      } else if (isStoreBuilding && stripeProductId?.startsWith('prod_') && buildingType === 'medium_store') {
-        lineItem = {
-          price_data: {
-            currency: 'usd',
-            product: stripeProductId,
-            unit_amount: priceAmount,
-          },
-          quantity: 1,
-        };
       } else {
         lineItem = {
           price_data: {
@@ -245,21 +247,25 @@ app.post('/api/create-checkout-session', async (req, res) => {
         };
       }
 
-      const session = await stripe.checkout.sessions.create({
-        line_items: [lineItem],
-        mode: 'payment',
-        metadata,
-        success_url: successUrl,
-        cancel_url: cancelUrl,
-      });
+      try {
+        const session = await stripe.checkout.sessions.create({
+          line_items: [lineItem],
+          mode: 'payment',
+          metadata,
+          success_url: successUrl,
+          cancel_url: cancelUrl,
+        });
 
-      return res.json({
-        url: session.url,
-        sessionId: session.id,
-        isLive: Boolean(
-          stripeSecretKey.startsWith('rk_live') || stripeSecretKey.startsWith('sk_live')
-        ),
-      });
+        return res.json({
+          url: session.url,
+          sessionId: session.id,
+          isLive: Boolean(
+            stripeSecretKey.startsWith('rk_live') || stripeSecretKey.startsWith('sk_live')
+          ),
+        });
+      } catch (stripeErr: any) {
+        console.warn('[Stripe API Notice] Live session failed, falling back to demo session:', stripeErr.message);
+      }
     }
 
     // Demo fallback session if no key is supplied

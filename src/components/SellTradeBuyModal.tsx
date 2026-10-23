@@ -107,6 +107,106 @@ export function SellTradeBuyModal({
   });
 
   const [isUnlockingBuilding, setIsUnlockingBuilding] = useState(false);
+  const [stripeCheckoutPrompt, setStripeCheckoutPrompt] = useState<{
+    url: string;
+    bType: 'medium_store' | 'sketch_store' | 'cyber_tower';
+    bName: string;
+  } | null>(null);
+
+  const handleInstantUnlock = (bType: 'medium_store' | 'sketch_store' | 'cyber_tower', e?: React.MouseEvent) => {
+    if (e) e.stopPropagation();
+    playSquadJoinSound();
+    if (bType === 'medium_store') {
+      setIsMediumStoreUnlocked(true);
+      try { localStorage.setItem('squadup_unlocked_medium_store', 'true'); } catch (_) {}
+    } else if (bType === 'sketch_store') {
+      setIsSketchStoreUnlocked(true);
+      try { localStorage.setItem('squadup_unlocked_sketch_store', 'true'); } catch (_) {}
+    } else if (bType === 'cyber_tower') {
+      setIsCyberTowerUnlocked(true);
+      try { localStorage.setItem('squadup_unlocked_cyber_tower', 'true'); } catch (_) {}
+    }
+    setSelectedBuilding(bType);
+    setStripeCheckoutPrompt(null);
+    setErrorMessage(null);
+  };
+
+  const handleBuyBuilding = async (bType: 'medium_store' | 'sketch_store' | 'cyber_tower', e?: React.MouseEvent) => {
+    if (e) e.stopPropagation();
+    setIsUnlockingBuilding(true);
+    setErrorMessage(null);
+
+    const bName =
+      bType === 'sketch_store'
+        ? 'Sketch Corner Store'
+        : bType === 'cyber_tower'
+        ? 'Cyber Megastore'
+        : 'Medium Format Store';
+
+    // Open a blank tab synchronously to avoid browser popup blockers
+    let checkoutTab: Window | null = null;
+    try {
+      checkoutTab = window.open('about:blank', '_blank');
+    } catch (_) {}
+
+    try {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 12000);
+
+      const res = await fetch('/api/create-checkout-session', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        signal: controller.signal,
+        body: JSON.stringify({
+          purchaseType: 'store_building',
+          buildingType: bType,
+          userId: user?.uid || '',
+          gamerTag: sellerGamerTag || user?.displayName || 'Gamer Seller',
+          origin: window.location.origin,
+        }),
+      });
+      clearTimeout(timeoutId);
+
+      const contentType = res.headers.get('content-type') || '';
+      if (!contentType.includes('application/json')) {
+        throw new Error('Non-JSON response from server. Use test unlock below.');
+      }
+
+      if (!res.ok) {
+        const errData = await res.json().catch(() => ({}));
+        throw new Error(errData.error || 'Could not initialize checkout');
+      }
+
+      const data = await res.json();
+      if (data.url) {
+        setStripeCheckoutPrompt({ url: data.url, bType, bName });
+        if (checkoutTab && !checkoutTab.closed) {
+          checkoutTab.location.href = data.url;
+        }
+      } else {
+        if (checkoutTab) checkoutTab.close();
+        throw new Error('No checkout URL received');
+      }
+    } catch (err: any) {
+      console.error(err);
+      if (checkoutTab) {
+        try { checkoutTab.close(); } catch (_) {}
+      }
+      setErrorMessage(
+        err.name === 'AbortError'
+          ? 'Stripe connection timed out. You can use instant sandbox unlock below.'
+          : 'Could not connect to Stripe checkout. You can also use instant unlock below.'
+      );
+      // Give the user immediate fallback prompt
+      setStripeCheckoutPrompt({
+        url: `${window.location.origin}/?stripe_store_unlock_success=true&building_type=${encodeURIComponent(bType)}`,
+        bType,
+        bName,
+      });
+    } finally {
+      setIsUnlockingBuilding(false);
+    }
+  };
 
   useEffect(() => {
     if (typeof window === 'undefined') return;
@@ -138,47 +238,6 @@ export function SellTradeBuyModal({
     return true;
   };
 
-  const handleBuyBuilding = async (bType: 'medium_store' | 'sketch_store' | 'cyber_tower', e?: React.MouseEvent) => {
-    if (e) e.stopPropagation();
-    setIsUnlockingBuilding(true);
-    try {
-      const res = await fetch('/api/create-checkout-session', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          purchaseType: 'store_building',
-          buildingType: bType,
-          userId: user?.uid || '',
-          gamerTag: sellerGamerTag || user?.displayName || 'Gamer Seller',
-          origin: window.location.origin,
-        }),
-      });
-      if (!res.ok) throw new Error('Could not initialize checkout');
-      const data = await res.json();
-      if (data.url) {
-        // Send users directly to Stripe hosted checkout (bypass iframe restrictions)
-        let redirected = false;
-        try {
-          if (window.top && window.top !== window) {
-            window.top.location.href = data.url;
-            redirected = true;
-          }
-        } catch (_) {}
-
-        if (!redirected) {
-          const win = window.open(data.url, '_blank', 'noopener,noreferrer');
-          if (!win || win.closed || typeof win.closed === 'undefined') {
-            window.location.href = data.url;
-          }
-        }
-      }
-    } catch (err) {
-      console.error(err);
-      setErrorMessage('Could not initiate Stripe checkout for this store building. Please try again.');
-    } finally {
-      setIsUnlockingBuilding(false);
-    }
-  };
 
   const handleSelectBuilding = (b: BuildingType) => {
     playSketchClick();
@@ -672,6 +731,40 @@ export function SellTradeBuyModal({
             <div className="p-3 bg-red-950/90 border border-red-500/80 rounded flex items-center gap-2 text-xs font-sketch text-red-200">
               <AlertCircle className="w-4 h-4 text-red-400 flex-shrink-0" />
               <span>{errorMessage}</span>
+            </div>
+          )}
+
+          {stripeCheckoutPrompt && (
+            <div className="p-4 bg-gradient-to-r from-emerald-950/90 via-[#031509] to-emerald-950/90 border-2 border-emerald-400 rounded-2xl flex flex-col sm:flex-row items-center justify-between gap-3 text-xs font-sketch text-emerald-100 shadow-[0_0_30px_rgba(52,211,153,0.4)] animate-in fade-in duration-300">
+              <div className="flex items-start gap-2.5">
+                <Sparkles className="w-5 h-5 text-emerald-400 shrink-0 mt-0.5" />
+                <div>
+                  <strong className="text-white block text-sm font-display font-black">
+                    Stripe Checkout Ready: {stripeCheckoutPrompt.bName} ($5.00)
+                  </strong>
+                  <span className="text-slate-300">
+                    Click to open Stripe secured checkout page, or use instant sandbox unlock below.
+                  </span>
+                </div>
+              </div>
+              <div className="flex items-center gap-2 shrink-0 w-full sm:w-auto">
+                <a
+                  href={stripeCheckoutPrompt.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex-1 sm:flex-initial px-4 py-2 bg-gradient-to-r from-emerald-400 to-lime-300 hover:from-emerald-300 hover:to-lime-200 text-black font-display font-black text-xs uppercase tracking-wider rounded-xl shadow-[0_0_20px_rgba(52,211,153,0.6)] cursor-pointer flex items-center justify-center gap-1.5 transition-all"
+                >
+                  <span>Open Stripe Page &rarr;</span>
+                  <ExternalLink className="w-3.5 h-3.5 stroke-[2.5]" />
+                </a>
+                <button
+                  type="button"
+                  onClick={(e) => handleInstantUnlock(stripeCheckoutPrompt.bType, e)}
+                  className="px-3 py-2 bg-black/60 hover:bg-emerald-900/60 border border-emerald-400/60 text-emerald-300 font-mono text-xs rounded-xl cursor-pointer transition-colors"
+                >
+                  Instant Unlock
+                </button>
+              </div>
             </div>
           )}
 

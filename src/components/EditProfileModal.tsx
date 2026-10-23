@@ -203,14 +203,24 @@ export function EditProfileModal({
   };
 
   const handleUnlockCharacter = async (charId: string, charName: string) => {
+    // Open a blank tab synchronously to prevent popup blocker
+    let checkoutTab: Window | null = null;
+    try {
+      checkoutTab = window.open('about:blank', '_blank');
+    } catch (_) {}
+
     try {
       setUnlockingCharacter(charId);
       setCheckoutMessage({ text: `Directing to secure Stripe Checkout for ${charName}...`, type: 'info' });
       playSketchClick();
 
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 12000);
+
       const res = await fetch('/api/create-checkout-session', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
+        signal: controller.signal,
         body: JSON.stringify({
           purchaseType: 'character_unlock',
           characterId: charId,
@@ -220,6 +230,12 @@ export function EditProfileModal({
           origin: window.location.origin,
         }),
       });
+      clearTimeout(timeoutId);
+
+      const contentType = res.headers.get('content-type') || '';
+      if (!contentType.includes('application/json')) {
+        throw new Error('Server returned non-JSON response.');
+      }
 
       const data = await res.json();
       if (data.url) {
@@ -230,27 +246,30 @@ export function EditProfileModal({
           sessionId: data.sessionId,
         });
 
-        // Send user directly to Stripe Checkout
-        let redirected = false;
-        try {
-          if (window.top && window.top !== window) {
-            window.top.location.href = data.url;
-            redirected = true;
-          }
-        } catch (_) {
-          redirected = false;
+        if (checkoutTab && !checkoutTab.closed) {
+          checkoutTab.location.href = data.url;
         }
 
-        if (!redirected) {
-          window.location.href = data.url;
-        }
+        setCheckoutMessage({
+          text: `Stripe Checkout session ready for ${charName}! Click the checkout button below if the window did not open.`,
+          type: 'info',
+        });
       } else {
+        if (checkoutTab) checkoutTab.close();
         setCheckoutMessage({ text: data.error || 'Failed to start Stripe checkout session', type: 'error' });
         setUnlockingCharacter(null);
       }
     } catch (err: any) {
       console.error('Character checkout error:', err);
-      setCheckoutMessage({ text: 'Unable to connect to Stripe checkout. Please try again.', type: 'error' });
+      if (checkoutTab) {
+        try { checkoutTab.close(); } catch (_) {}
+      }
+      setCheckoutMessage({
+        text: err.name === 'AbortError'
+          ? 'Stripe request timed out. Please try again.'
+          : 'Unable to connect to Stripe checkout. Please try again.',
+        type: 'error',
+      });
       setUnlockingCharacter(null);
     }
   };

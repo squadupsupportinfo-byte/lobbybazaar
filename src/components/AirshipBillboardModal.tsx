@@ -64,6 +64,7 @@ export const AirshipBillboardModal: React.FC<AirshipBillboardModalProps> = ({
   const [successMsg, setSuccessMsg] = useState<string | null>(null);
   const [showUploadDrawer, setShowUploadDrawer] = useState<boolean>(false);
   const [isStripeModalOpen, setIsStripeModalOpen] = useState<boolean>(false);
+  const [directStripeUrl, setDirectStripeUrl] = useState<string | null>(null);
   const [currentZoom, setCurrentZoom] = useState<number>(0.8);
   const [currentCraftType, setCurrentCraftType] = useState<AerialCraftType>(initialCraftType);
 
@@ -186,6 +187,12 @@ export const AirshipBillboardModal: React.FC<AirshipBillboardModalProps> = ({
     setIsOpeningCheckout(true);
     playSketchClick();
 
+    // Open a blank tab synchronously on click to avoid browser popup blockers
+    let checkoutTab: Window | null = null;
+    try {
+      checkoutTab = window.open('about:blank', '_blank');
+    } catch (_) {}
+
     try {
       // Save draft in sessionStorage for recovery upon payment return
       try {
@@ -205,9 +212,13 @@ export const AirshipBillboardModal: React.FC<AirshipBillboardModalProps> = ({
         );
       } catch {}
 
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 12000);
+
       const res = await fetch('/api/create-checkout-session', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
+        signal: controller.signal,
         body: JSON.stringify({
           billboardId,
           billboardName,
@@ -217,6 +228,12 @@ export const AirshipBillboardModal: React.FC<AirshipBillboardModalProps> = ({
           origin: window.location.origin,
         }),
       });
+      clearTimeout(timeoutId);
+
+      const contentType = res.headers.get('content-type') || '';
+      if (!contentType.includes('application/json')) {
+        throw new Error('Server returned non-JSON response. Please complete payment using the card form below.');
+      }
 
       if (!res.ok) {
         const errData = await res.json().catch(() => ({}));
@@ -225,22 +242,23 @@ export const AirshipBillboardModal: React.FC<AirshipBillboardModalProps> = ({
 
       const data = await res.json();
       setIsOpeningCheckout(false);
+
       if (data.url) {
-        // Open in new tab so iframe is never blocked by Stripe's X-Frame-Options
-        const win = window.open(data.url, '_blank', 'noopener,noreferrer');
-        if (!win || win.closed || typeof win.closed === 'undefined') {
-          // If popup blocked, seamlessly open in-app modal
-          setIsStripeModalOpen(true);
-        } else {
-          setSuccessMsg(
-            'Stripe Checkout opened in a new secure window. Return here once complete, or pay using the card form.'
-          );
+        setDirectStripeUrl(data.url);
+        if (checkoutTab && !checkoutTab.closed) {
+          checkoutTab.location.href = data.url;
         }
+        // Always open in-app modal as seamless companion with link and card form
+        setIsStripeModalOpen(true);
       } else {
+        if (checkoutTab) checkoutTab.close();
         setIsStripeModalOpen(true);
       }
     } catch (err: any) {
       console.error('Error opening checkout window:', err);
+      if (checkoutTab) {
+        try { checkoutTab.close(); } catch (_) {}
+      }
       setIsOpeningCheckout(false);
       // Fallback: Open in-app modal so user can pay right away
       setIsStripeModalOpen(true);
@@ -681,6 +699,7 @@ export const AirshipBillboardModal: React.FC<AirshipBillboardModalProps> = ({
         photoUrl={selectedImageDataUrl || ''}
         durationDays={promotionDays}
         priceUsd={promotionPrice}
+        initialDirectUrl={directStripeUrl || undefined}
         onPaymentSuccess={handlePaymentConfirmed}
       />
     </div>

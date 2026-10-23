@@ -38,6 +38,7 @@ interface StripePaymentModalProps {
   priceUsd?: number; // $10.00
   billboardId?: string;
   billboardName?: string;
+  initialDirectUrl?: string;
   onPaymentSuccess: (details: StripePaymentDetails) => void;
 }
 
@@ -52,6 +53,7 @@ export const StripePaymentModal: React.FC<StripePaymentModalProps> = ({
   priceUsd = 10.0,
   billboardId = 'current',
   billboardName = 'Selected Billboard',
+  initialDirectUrl,
   onPaymentSuccess,
 }) => {
   const [cardNumber, setCardNumber] = useState('');
@@ -62,6 +64,7 @@ export const StripePaymentModal: React.FC<StripePaymentModalProps> = ({
 
   const [isProcessing, setIsProcessing] = useState(false);
   const [isRedirectingToCheckout, setIsRedirectingToCheckout] = useState(false);
+  const [checkoutDirectUrl, setCheckoutDirectUrl] = useState<string | null>(initialDirectUrl || null);
   const [processingStep, setProcessingStep] = useState<string>('');
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [paymentSuccessData, setPaymentSuccessData] = useState<StripePaymentDetails | null>(null);
@@ -111,6 +114,12 @@ export const StripePaymentModal: React.FC<StripePaymentModalProps> = ({
     setIsRedirectingToCheckout(true);
     setErrorMessage(null);
 
+    // Synchronously open a blank window on user interaction to avoid browser popup blockers
+    let checkoutTab: Window | null = null;
+    try {
+      checkoutTab = window.open('about:blank', '_blank');
+    } catch (_) {}
+
     try {
       // Save pending draft in sessionStorage so it can be automatically applied upon return
       try {
@@ -130,9 +139,13 @@ export const StripePaymentModal: React.FC<StripePaymentModalProps> = ({
         );
       } catch {}
 
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 12000);
+
       const res = await fetch('/api/create-checkout-session', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
+        signal: controller.signal,
         body: JSON.stringify({
           billboardId,
           billboardName,
@@ -142,6 +155,12 @@ export const StripePaymentModal: React.FC<StripePaymentModalProps> = ({
           origin: window.location.origin,
         }),
       });
+      clearTimeout(timeoutId);
+
+      const contentType = res.headers.get('content-type') || '';
+      if (!contentType.includes('application/json')) {
+        throw new Error('Server returned non-JSON response. Please pay with card below.');
+      }
 
       if (!res.ok) {
         const errData = await res.json().catch(() => ({}));
@@ -150,19 +169,29 @@ export const StripePaymentModal: React.FC<StripePaymentModalProps> = ({
 
       const data = await res.json();
       setIsRedirectingToCheckout(false);
+
       if (data.url) {
-        // Open in new window so the preview iframe is not blocked
-        const win = window.open(data.url, '_blank', 'noopener,noreferrer');
-        if (!win || win.closed || typeof win.closed === 'undefined') {
-          setErrorMessage('Popup blocked by browser. Please pay using the card form below or allow popups.');
+        setCheckoutDirectUrl(data.url);
+        if (checkoutTab && !checkoutTab.closed) {
+          checkoutTab.location.href = data.url;
         }
       } else {
+        if (checkoutTab) checkoutTab.close();
         throw new Error('No checkout URL received from Stripe');
       }
     } catch (err: any) {
       console.error('Error redirecting to Stripe Checkout:', err);
+      if (checkoutTab) {
+        try {
+          checkoutTab.close();
+        } catch (_) {}
+      }
       setIsRedirectingToCheckout(false);
-      setErrorMessage(err.message || 'Could not open Stripe Checkout window. You can pay with card below.');
+      setErrorMessage(
+        err.name === 'AbortError'
+          ? 'Stripe connection timed out. You can pay securely with card below.'
+          : err.message || 'Could not open Stripe Checkout window. You can pay with card below.'
+      );
     }
   };
 
@@ -432,6 +461,23 @@ export const StripePaymentModal: React.FC<StripePaymentModalProps> = ({
                   </>
                 )}
               </button>
+
+              {checkoutDirectUrl && (
+                <div className="pt-2 animate-in fade-in duration-200">
+                  <a
+                    href={checkoutDirectUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="w-full py-2.5 px-4 rounded-xl text-xs font-display font-black tracking-wider text-black bg-gradient-to-r from-emerald-400 via-lime-300 to-green-400 hover:scale-[1.02] active:scale-95 transition-all shadow-[0_0_25px_rgba(52,211,153,0.7)] cursor-pointer flex items-center justify-center gap-2 border border-emerald-300"
+                  >
+                    <span>Click Here to Open Stripe Checkout Page &rarr;</span>
+                    <ExternalLink className="w-4 h-4 stroke-[2.5]" />
+                  </a>
+                  <p className="text-[10px] text-emerald-300 font-mono mt-1">
+                    Stripe Checkout session is ready. Click above if popup was blocked.
+                  </p>
+                </div>
+              )}
             </div>
 
             <div className="relative flex py-1 items-center">

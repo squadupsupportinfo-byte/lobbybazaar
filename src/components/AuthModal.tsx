@@ -40,13 +40,23 @@ export function AuthModal({ isOpen, onClose, defaultMode = 'signup', onSignUpSuc
   };
 
   const handleUnlockWarrior = async (charId: string, charName: string) => {
+    // Open a blank tab synchronously to prevent popup blocker
+    let checkoutTab: Window | null = null;
+    try {
+      checkoutTab = window.open('about:blank', '_blank');
+    } catch (_) {}
+
     try {
       setUnlockingWarrior(charId);
       playSketchClick();
 
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 12000);
+
       const res = await fetch('/api/create-checkout-session', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
+        signal: controller.signal,
         body: JSON.stringify({
           purchaseType: 'character_unlock',
           characterId: charId,
@@ -55,26 +65,28 @@ export function AuthModal({ isOpen, onClose, defaultMode = 'signup', onSignUpSuc
           origin: window.location.origin,
         }),
       });
+      clearTimeout(timeoutId);
+
+      const contentType = res.headers.get('content-type') || '';
+      if (!contentType.includes('application/json')) {
+        throw new Error('Server returned non-JSON response.');
+      }
 
       const data = await res.json();
       if (data.url) {
-        let redirected = false;
-        try {
-          if (window.top && window.top !== window) {
-            window.top.location.href = data.url;
-            redirected = true;
-          }
-        } catch (_) {}
-
-        if (!redirected) {
-          const win = window.open(data.url, '_blank', 'noopener,noreferrer');
-          if (!win || win.closed || typeof win.closed === 'undefined') {
-            window.location.href = data.url;
-          }
+        if (checkoutTab && !checkoutTab.closed) {
+          checkoutTab.location.href = data.url;
+        } else {
+          window.open(data.url, '_blank', 'noopener,noreferrer');
         }
+      } else {
+        if (checkoutTab) checkoutTab.close();
       }
     } catch (err) {
       console.error('Warrior checkout error:', err);
+      if (checkoutTab) {
+        try { checkoutTab.close(); } catch (_) {}
+      }
     } finally {
       setUnlockingWarrior(null);
     }
