@@ -1,5 +1,5 @@
 import React from 'react';
-import { UserPlus, LogOut, Users, Mail, UserCog } from 'lucide-react';
+import { UserPlus, LogOut, Users, Mail } from 'lucide-react';
 import { playSketchClick } from '../utils/audio';
 import { useAuth } from '../context/AuthContext';
 
@@ -76,23 +76,6 @@ export function TopNav({
           {/* Account status: Logged in profile badge vs Sign Up button */}
           {user ? (
             <div className="flex items-center gap-2 sm:gap-3">
-              {/* Prominent & Large Edit Profile UI Button */}
-              {onOpenEditProfile && (
-                <button
-                  type="button"
-                  onClick={() => {
-                    playSketchClick();
-                    onOpenEditProfile();
-                  }}
-                  title="Open and Edit Your Gamer Profile, Avatar & Settings"
-                  className="flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-1.5 h-8 sm:h-9 bg-gradient-to-r from-lime-500/30 via-green-500/25 to-emerald-500/20 hover:from-lime-500/40 hover:via-green-500/35 hover:to-emerald-500/30 text-lime-300 hover:text-lime-100 border-2 border-lime-400 hover:border-lime-300 rounded-xl text-xs sm:text-sm font-display font-bold shadow-[0_0_15px_rgba(163,230,53,0.35)] hover:shadow-[0_0_25px_rgba(163,230,53,0.6)] transition-all cursor-pointer hover:scale-105 active:scale-95"
-                  style={{ borderRadius: '255px 15px 225px 15px / 15px 225px 15px 255px' }}
-                >
-                  <UserCog className="w-4 h-4 text-lime-300 flex-shrink-0" />
-                  <span className="font-bold tracking-wide">Edit Profile</span>
-                </button>
-              )}
-
               {/* Friends & Friend Requests Notification Button */}
               {onOpenFriendRequests && (
                 <button
@@ -101,20 +84,20 @@ export function TopNav({
                     onOpenFriendRequests();
                   }}
                   title="Friend Requests & Squad Connections"
-                  className="relative flex items-center gap-1 sm:gap-1.5 px-2 sm:px-3 py-1 h-8 sm:h-9 bg-[#020c06] hover:bg-[#071d0e] border border-lime-500/50 rounded-xl text-xs font-sketch text-lime-300 transition-all cursor-pointer shadow-[0_0_10px_rgba(163,230,53,0.25)] hover:scale-105 active:scale-95"
+                  className="relative flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 h-10 sm:h-11 md:h-12 bg-[#020c06] hover:bg-[#071d0e] border-2 border-lime-500/60 hover:border-lime-400 rounded-xl text-xs sm:text-sm font-sketch font-bold text-lime-300 transition-all cursor-pointer shadow-[0_0_12px_rgba(163,230,53,0.3)] hover:scale-105 active:scale-95"
                   style={{ borderRadius: '255px 15px 225px 15px / 15px 225px 15px 255px' }}
                 >
-                  <Users className="w-3.5 h-3.5 text-lime-400" />
+                  <Users className="w-4 h-4 sm:w-4.5 sm:h-4.5 text-lime-400" />
                   <span className="hidden sm:inline">Friends</span>
                   {incomingRequestsCount > 0 && (
-                    <span className="px-1.5 py-0.2 rounded-full bg-lime-400 text-black text-[10px] font-mono font-bold animate-pulse shadow-[0_0_8px_#a3e635]">
+                    <span className="px-1.5 py-0.5 rounded-full bg-lime-400 text-black text-[11px] font-mono font-bold animate-pulse shadow-[0_0_8px_#a3e635]">
                       {incomingRequestsCount}
                     </span>
                   )}
                 </button>
               )}
 
-              {/* Profile Badge / Social Card */}
+              {/* Profile Badge / Social Card (Mrg name UI - click to view/edit profile) */}
               <button
                 onClick={() => {
                   playSketchClick();
@@ -124,25 +107,25 @@ export function TopNav({
                     onOpenEditProfile();
                   }
                 }}
-                title="View Social Profile Card (Followers & Following)"
-                className="flex items-center gap-1.5 sm:gap-2 px-2 sm:px-3 py-1 h-8 sm:h-9 bg-[#030d06] hover:bg-[#07190d] border border-green-400/60 rounded-xl text-xs font-sketch text-green-200 shadow-[0_0_10px_rgba(34,197,94,0.3)] transition-all cursor-pointer group"
+                title="View & Edit Gamer Profile (Avatar, Bio, Followers & Settings)"
+                className="flex items-center gap-2 sm:gap-3 px-3.5 sm:px-5 h-10 sm:h-11 md:h-12 bg-gradient-to-r from-[#031508] to-[#072510] hover:from-[#06240d] hover:to-[#0c3517] border-2 border-green-400/80 hover:border-green-300 rounded-xl text-green-200 shadow-[0_0_16px_rgba(34,197,94,0.4)] hover:shadow-[0_0_25px_rgba(34,197,94,0.6)] transition-all cursor-pointer group hover:scale-105 active:scale-95"
                 style={{ borderRadius: '255px 15px 225px 15px / 15px 225px 15px 255px' }}
               >
                 {gamerProfile?.photoUrl ? (
                   <img
                     src={gamerProfile.photoUrl}
                     alt="Avatar"
-                    className="w-5 h-5 sm:w-6 sm:h-6 rounded-full object-cover border border-green-400 flex-shrink-0"
+                    className="w-6 h-6 sm:w-7 sm:h-7 md:w-8 md:h-8 rounded-full object-cover border-2 border-green-400 flex-shrink-0 shadow-[0_0_8px_rgba(74,222,128,0.5)]"
                   />
                 ) : (
-                  <div className="w-2.5 h-2.5 rounded-full bg-green-400 animate-pulse flex-shrink-0" />
+                  <div className="w-3 h-3 sm:w-3.5 sm:h-3.5 rounded-full bg-green-400 animate-pulse flex-shrink-0 shadow-[0_0_8px_#22c55e]" />
                 )}
-                <span className="font-bold font-display group-hover:text-green-300 max-w-[80px] sm:max-w-none truncate text-xs sm:text-sm">
+                <span className="font-black font-display tracking-wider group-hover:text-green-300 max-w-[110px] sm:max-w-none truncate text-xs sm:text-sm md:text-base">
                   {gamerProfile?.gamerTag || user.displayName || 'Gamer'}
                 </span>
                 {unreadMessagesCount > 0 && (
                   <span
-                    className="px-1.5 py-0.2 rounded-full bg-emerald-400 text-black text-[10px] font-mono font-bold animate-pulse shadow-[0_0_8px_#10b981]"
+                    className="px-1.5 py-0.5 rounded-full bg-emerald-400 text-black text-[11px] font-mono font-bold animate-pulse shadow-[0_0_8px_#10b981]"
                     title={`${unreadMessagesCount} unread message(s)`}
                   >
                     {unreadMessagesCount}
@@ -153,10 +136,10 @@ export function TopNav({
               <button
                 onClick={() => logout()}
                 title="Log Out"
-                className="p-1 h-8 w-8 sm:h-9 sm:w-9 flex items-center justify-center text-slate-400 hover:text-red-400 cursor-pointer border border-slate-700/60 rounded-xl transition-colors hover:border-red-400/50"
+                className="p-1.5 h-10 w-10 sm:h-11 sm:w-11 md:h-12 md:w-12 flex items-center justify-center text-slate-400 hover:text-red-400 cursor-pointer border border-slate-700/80 hover:border-red-400/70 rounded-xl transition-all hover:bg-red-950/20 hover:scale-105 active:scale-95"
                 style={{ borderRadius: '255px 15px 225px 15px / 15px 225px 15px 255px' }}
               >
-                <LogOut className="w-3.5 h-3.5" />
+                <LogOut className="w-4 h-4 sm:w-4.5 sm:h-4.5" />
               </button>
             </div>
           ) : (
