@@ -1256,7 +1256,6 @@ function SquadUpApp() {
         incomingRequestsCount={incomingFriendRequests.length}
         onOpenSellTradeModal={handleOpenSellTradeModal}
         onOpenEditStore={handleOpenEditStore}
-        onOpenTerms={() => setIsTermsModalOpen(true)}
         onOpenSupport={() => setIsSupportModalOpen(true)}
       />
 

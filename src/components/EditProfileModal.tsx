@@ -767,29 +767,31 @@ export function EditProfileModal({
           onClose();
         }
       }}
-      className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-5 bg-black/85 backdrop-blur-md overflow-y-auto cursor-pointer"
+      className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 bg-black/85 backdrop-blur-md overflow-y-auto cursor-pointer"
     >
       <div
         onClick={(e) => e.stopPropagation()}
-        className="w-full max-w-2xl bg-[#030904] text-slate-100 p-5 sm:p-7 relative border my-auto max-h-[92vh] flex flex-col cursor-default"
+        className="w-full max-w-4xl bg-[#030904] text-slate-100 p-5 sm:p-8 relative border my-auto max-h-[94vh] flex flex-col cursor-default"
         style={{
           borderRadius: '255px 15px 225px 15px / 15px 225px 15px 255px',
           borderColor: '#22c55e',
-          boxShadow: '0 0 35px rgba(34, 197, 94, 0.5), inset 0 0 20px rgba(34, 197, 94, 0.08)',
+          boxShadow: '0 0 45px rgba(34, 197, 94, 0.55), inset 0 0 25px rgba(34, 197, 94, 0.1)',
         }}
       >
         {/* Header */}
-        <div className="flex items-center justify-between pb-3 border-b border-green-500/30 mb-4 flex-shrink-0">
-          <div className="flex items-center gap-2.5">
-            <Shield className="w-5 h-5 text-green-400" />
+        <div className="flex items-center justify-between pb-4 border-b border-green-500/30 mb-5 flex-shrink-0">
+          <div className="flex items-center gap-3">
+            <div className="p-2 bg-green-950/80 border border-green-400/50 rounded-xl shadow-[0_0_12px_rgba(34,197,94,0.3)]">
+              <Shield className="w-6 h-6 text-green-400" />
+            </div>
             <div>
-              <h2 className="text-lg font-bold font-display text-white tracking-wide flex items-center gap-2">
+              <h2 className="text-xl sm:text-2xl font-black font-display text-white tracking-wide flex items-center gap-2.5">
                 <span>Tactical Gamer Dossier · Edit Profile</span>
-                <span className="text-[10px] font-mono-num text-green-400 bg-green-950 px-2 py-0.5 rounded border border-green-500/40">
+                <span className="text-[11px] font-mono font-bold text-green-400 bg-green-950 px-2.5 py-0.5 rounded border border-green-500/40">
                   LIVE SYNC
                 </span>
               </h2>
-              <p className="text-xs font-sketch text-slate-400">
+              <p className="text-xs sm:text-sm font-sketch text-slate-300 mt-0.5">
                 Update your avatar, bio, favorite genres, socials & screenshot showcase.
               </p>
             </div>
@@ -801,11 +803,11 @@ export function EditProfileModal({
               playSketchClick();
               onClose();
             }}
-            className="p-1.5 text-slate-400 hover:text-white bg-black/60 hover:bg-white/10 border border-white/20 hover:border-white/50 rounded-lg transition-colors cursor-pointer select-none"
+            className="p-2 text-slate-400 hover:text-white bg-black/60 hover:bg-white/10 border border-white/20 hover:border-white/50 rounded-xl transition-colors cursor-pointer select-none"
             title="Close [Esc]"
             aria-label="Close"
           >
-            <X className="w-4 h-4 stroke-[1.75]" />
+            <X className="w-5 h-5 stroke-[2]" />
           </button>
         </div>
 
@@ -1695,14 +1697,14 @@ export function EditProfileModal({
         </div>
 
         {/* Footer Actions: Save ("Safe") Button & Cancel */}
-        <div className="pt-4 border-t border-green-500/30 mt-3 flex items-center justify-between flex-shrink-0">
+        <div className="pt-4 border-t border-green-500/30 mt-4 flex items-center justify-between flex-shrink-0">
           <button
             type="button"
             onClick={() => {
               playSketchClick();
               onClose();
             }}
-            className="px-4 py-2 text-xs font-sketch text-slate-400 hover:text-white cursor-pointer"
+            className="px-5 py-2.5 text-sm font-sketch text-slate-300 hover:text-white cursor-pointer rounded-xl hover:bg-white/5 transition-colors"
           >
             Cancel
           </button>
@@ -1711,20 +1713,20 @@ export function EditProfileModal({
             type="button"
             disabled={isSaving}
             onClick={handleSave}
-            className="px-6 py-2.5 text-xs font-bold font-display tracking-wider text-green-100 bg-green-900/80 hover:bg-green-800 border border-green-400 rounded cursor-pointer transition-all duration-200 shadow-[0_0_20px_rgba(34,197,94,0.6)] flex items-center gap-2"
+            className="px-8 py-3 text-sm font-black font-display tracking-wider text-green-950 bg-gradient-to-r from-lime-400 via-green-400 to-emerald-400 hover:from-lime-300 hover:via-green-300 hover:to-emerald-300 border-2 border-lime-300 rounded-xl cursor-pointer transition-all duration-200 shadow-[0_0_25px_rgba(163,230,53,0.6)] flex items-center gap-2.5 hover:scale-105 active:scale-95 disabled:opacity-60"
             style={{ borderRadius: '255px 15px 225px 15px / 15px 225px 15px 255px' }}
           >
             {isSaving ? (
-              <span>Saving Dossier...</span>
+              <span className="font-bold">Saving Dossier...</span>
             ) : saveSuccess ? (
               <>
-                <Check className="w-4 h-4 text-green-300" />
-                <span>Saved to Map!</span>
+                <Check className="w-5 h-5 text-green-950 stroke-[3]" />
+                <span className="font-bold">Saved to Map!</span>
               </>
             ) : (
               <>
-                <Save className="w-4 h-4 text-green-400" />
-                <span>Save Profile to Map</span>
+                <Save className="w-5 h-5 text-green-950 stroke-[2.5]" />
+                <span className="font-bold tracking-wide">Save Profile to Map</span>
               </>
             )}
           </button>
